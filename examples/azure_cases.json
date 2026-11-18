@@ -1,0 +1,102 @@
+{
+  "provenance": "Casos construidos para comprobar el flujo real autorizado de Chile; no son tickets históricos ni una evaluación de precisión",
+  "human_reviewed": false,
+  "cases": [
+    {
+      "id": "crear-cuenta-real",
+      "input": {
+        "titulo": "Crear Cuenta",
+        "pais": "Chile",
+        "tipo_usuario": "Colaborador",
+        "descripcion": "Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core para una persona nueva en ambiente productivo."
+      },
+      "expected_status": 200,
+      "expected": {
+        "estado": "clasificado",
+        "modo": "real",
+        "estrategia": "jerarquica",
+        "jira_modificado": false,
+        "solicitud": {
+          "codigo": "SOL_3ebede04c322c56d",
+          "nombre": "Crear Cuenta"
+        },
+        "servicio": {
+          "codigo": "SER_9af8acac33490abe",
+          "nombre": "Gestion de Usuarios"
+        }
+      }
+    },
+    {
+      "id": "crear-cuenta-repetida",
+      "input": {
+        "titulo": "Crear Cuenta",
+        "pais": "Chile",
+        "tipo_usuario": "Colaborador",
+        "descripcion": "Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core para una persona nueva en ambiente productivo."
+      },
+      "expected_status": 200,
+      "expected": {
+        "estado": "clasificado",
+        "modo": "real",
+        "estrategia": "jerarquica",
+        "jira_modificado": false,
+        "solicitud": {
+          "codigo": "SOL_3ebede04c322c56d",
+          "nombre": "Crear Cuenta"
+        },
+        "servicio": {
+          "codigo": "SER_9af8acac33490abe",
+          "nombre": "Gestion de Usuarios"
+        },
+        "reutilizada": true
+      }
+    },
+    {
+      "id": "backup-real",
+      "input": {
+        "titulo": "Backup Base de Datos",
+        "pais": "Chile",
+        "tipo_usuario": "Colaborador",
+        "descripcion": "Solicito realizar un backup de una base de datos para un laboratorio."
+      },
+      "expected_status": 200,
+      "expected": {
+        "estado": "clasificado",
+        "modo": "real",
+        "jira_modificado": false,
+        "solicitud": {
+          "codigo": "SOL_37dd2f97b2be12f5",
+          "nombre": "Backup Base de Datos"
+        },
+        "servicio": {
+          "codigo": "SER_462bd64a5665690d",
+          "nombre": "Backup, Recuperacion y Disponibilidad de Datos"
+        }
+      }
+    },
+    {
+      "id": "fuera-catalogo-real",
+      "input": {
+        "titulo": "Reservar restaurante",
+        "pais": "Chile",
+        "tipo_usuario": "Colaborador",
+        "descripcion": "Necesito una mesa para cenar con mi familia el sábado."
+      },
+      "expected_status": 200,
+      "expected": {
+        "modo": "real",
+        "estado": "requiere_aclaracion",
+        "solicitud": null,
+        "servicio": null
+      }
+    },
+    {
+      "id": "entrada-incompleta",
+      "input": {
+        "titulo": "Crear cuenta"
+      },
+      "expected_status": 422,
+      "expected": {}
+    }
+  ]
+}

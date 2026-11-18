@@ -1,0 +1,554 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "MS clasificador Jira nuam",
+    "version": "0.5.0",
+    "description": "Clasifica un borrador antes de crear el ticket. Entrada: titulo, pais, tipo_usuario, descripcion. Salida: solicitud y servicio asociado. No selecciona variantes ni modifica Jira. Catálogo limitado a servicio, nombre, descripción requisitos y país de solicitudes estándar; país filtra opciones con alcance conocido y tipo de usuario aporta contexto. Decision-1 usa selección por servicios, lotes acotados y comparación final cuando las opciones no caben en una sola llamada."
+  },
+  "paths": {
+    "/clasificaciones": {
+      "post": {
+        "summary": "Identificar solicitud y derivar su servicio",
+        "operationId": "clasificar",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EntradaClasificacion"
+              },
+              "example": {
+                "titulo": "Necesito crear una cuenta",
+                "pais": "Chile",
+                "tipo_usuario": "Colaborador",
+                "descripcion": "Se incorpora una persona al equipo y requiere acceso."
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Credencial de API inválida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Cuerpo mayor a 128 KiB, o entrada/opción individual que no cabe en el presupuesto del modelo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Entrada inválida: cuatro campos obligatorios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Base, catálogo o proveedor no disponible/respuesta inválida; proveedor_limite_contexto no es reintentable.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Timeout del proveedor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Solicitud y servicio identificados, o aclaración con candidatos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Clasificacion"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Salud del proceso y modo efectivo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No disponible"
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "summary": "Disponibilidad de base y catálogo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No disponible"
+          }
+        }
+      }
+    },
+    "/catalogo/resumen": {
+      "get": {
+        "summary": "Reporte de importación del catálogo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "No disponible"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/catalogo/{kind}": {
+      "get": {
+        "summary": "Consultar servicios o solicitudes estándar (nombre, descripción y requisitos)",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "servicios",
+                "solicitudes"
+              ]
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          },
+          {
+            "name": "parent_code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Listado paginado"
+          },
+          "401": {
+            "description": "Credencial inválida"
+          },
+          "404": {
+            "description": "Recurso desconocido"
+          },
+          "422": {
+            "description": "Parámetros inválidos"
+          },
+          "503": {
+            "description": "Catálogo no disponible"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "EntradaClasificacion": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "titulo",
+          "pais",
+          "tipo_usuario",
+          "descripcion"
+        ],
+        "properties": {
+          "titulo": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "pattern": "\\S"
+          },
+          "pais": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "\\S"
+          },
+          "tipo_usuario": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "\\S"
+          },
+          "descripcion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20000,
+            "pattern": "\\S"
+          }
+        }
+      },
+      "Entidad": {
+        "type": "object",
+        "required": [
+          "codigo",
+          "nombre"
+        ],
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Candidato": {
+        "type": "object",
+        "required": [
+          "solicitud",
+          "servicio"
+        ],
+        "properties": {
+          "solicitud": {
+            "$ref": "#/components/schemas/Entidad"
+          },
+          "servicio": {
+            "$ref": "#/components/schemas/Entidad"
+          },
+          "probabilidad": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "puntaje_simulado": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "probabilidad"
+            ],
+            "not": {
+              "required": [
+                "puntaje_simulado"
+              ]
+            }
+          },
+          {
+            "required": [
+              "puntaje_simulado"
+            ],
+            "not": {
+              "required": [
+                "probabilidad"
+              ]
+            }
+          }
+        ]
+      },
+      "Clasificacion": {
+        "type": "object",
+        "required": [
+          "decision_id",
+          "estado",
+          "motivo",
+          "solicitud",
+          "servicio",
+          "modo",
+          "proveedor",
+          "catalogo_version",
+          "catalogo_provisional",
+          "jira_modificado",
+          "candidatos",
+          "politica",
+          "latencia_ms",
+          "reutilizada",
+          "estrategia",
+          "etapas"
+        ],
+        "properties": {
+          "decision_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "estado": {
+            "enum": [
+              "clasificado",
+              "requiere_aclaracion"
+            ]
+          },
+          "motivo": {
+            "enum": [
+              "solicitud_identificada",
+              "baja_confianza",
+              "solicitud_ambigua",
+              "sin_correspondencia_en_catalogo",
+              "catalogo_sin_solicitudes",
+              "descripcion_catalogo_pendiente",
+              "sin_solicitudes_para_pais"
+            ]
+          },
+          "solicitud": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Entidad"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "servicio": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Entidad"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "modo": {
+            "enum": [
+              "simulado",
+              "real"
+            ]
+          },
+          "proveedor": {
+            "type": "string"
+          },
+          "modelo": {
+            "type": "string"
+          },
+          "catalogo_version": {
+            "type": "string"
+          },
+          "catalogo_provisional": {
+            "const": true
+          },
+          "jira_modificado": {
+            "const": false
+          },
+          "candidatos": {
+            "type": "array",
+            "maxItems": 5,
+            "items": {
+              "$ref": "#/components/schemas/Candidato"
+            }
+          },
+          "probabilidad_solicitud": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "puntaje_simulado": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "politica": {
+            "type": "object",
+            "required": [
+              "umbral",
+              "margen_minimo"
+            ],
+            "properties": {
+              "umbral": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 1
+              },
+              "margen_minimo": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          },
+          "latencia_ms": {
+            "type": "number",
+            "minimum": 0
+          },
+          "reutilizada": {
+            "type": "boolean"
+          },
+          "estrategia": {
+            "enum": [
+              "simulada",
+              "directa",
+              "jerarquica",
+              "lotes"
+            ]
+          },
+          "etapas": {
+            "type": "array",
+            "description": "Una entrada por llamada real, con probabilidades locales de esa etapa; no son probabilidades conjuntas de la ruta.",
+            "items": {
+              "type": "object",
+              "required": [
+                "fase",
+                "opciones",
+                "bytes_peticion",
+                "seleccion_codigo",
+                "probabilidad_maxima",
+                "latencia_ms",
+                "ronda",
+                "lote"
+              ],
+              "properties": {
+                "fase": {
+                  "enum": [
+                    "servicio",
+                    "solicitud"
+                  ]
+                },
+                "opciones": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "bytes_peticion": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "seleccion_codigo": {
+                  "type": "string"
+                },
+                "probabilidad_maxima": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "latencia_ms": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "ronda": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "lote": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "servicios_candidatos": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "detail": {},
+          "error": {
+            "type": "string"
+          },
+          "reintentable": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

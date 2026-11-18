@@ -1,0 +1,388 @@
+{
+  "auth": {
+    "bearer": [
+      {
+        "key": "token",
+        "type": "string",
+        "value": "{{api_token}}"
+      }
+    ],
+    "type": "bearer"
+  },
+  "info": {
+    "description": "Entrada: titulo, pais, tipo_usuario y descripcion. Casos para el simulador; no miden precisión de Decision-1.",
+    "name": "Jira nuam: clasificación de solicitud y servicio",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () =\u003e pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "health",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () =\u003e pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "ready",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/ready"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () =\u003e pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "catalogo/resumen",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/catalogo/resumen"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () =\u003e pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "catalogo/solicitudes?q=Crear%20Cuenta",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/catalogo/solicitudes?q=Crear%20Cuenta"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"estado\", () =\u003e pm.expect(body[\"estado\"]).to.eql(\"clasificado\"));",
+              "pm.test(\"jira_modificado\", () =\u003e pm.expect(body[\"jira_modificado\"]).to.eql(false));",
+              "pm.test(\"modo\", () =\u003e pm.expect(body[\"modo\"]).to.eql(\"simulado\"));",
+              "pm.test(\"servicio\", () =\u003e pm.expect(body[\"servicio\"]).to.eql({\"codigo\":\"SER_9af8acac33490abe\",\"nombre\":\"Gestion de Usuarios\"}));",
+              "pm.test(\"solicitud\", () =\u003e pm.expect(body[\"solicitud\"]).to.eql({\"codigo\":\"SOL_3ebede04c322c56d\",\"nombre\":\"Crear Cuenta\"}));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "solicitud-sin-aplicacion-ni-variante",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Crear Cuenta\",\n        \"pais\": \"Chile\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"estado\", () =\u003e pm.expect(body[\"estado\"]).to.eql(\"clasificado\"));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "solicitud-peru",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Crear Cuenta\",\n        \"pais\": \"Perú\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"estado\", () =\u003e pm.expect(body[\"estado\"]).to.eql(\"clasificado\"));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "solicitud-colombia",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Crear Cuenta\",\n        \"pais\": \"Colombia\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"estado\", () =\u003e pm.expect(body[\"estado\"]).to.eql(\"clasificado\"));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "tipo-usuario-como-contexto",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Crear Cuenta\",\n        \"pais\": \"Chile\",\n        \"tipo_usuario\": \"Externo\",\n        \"descripcion\": \"Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"estado\", () =\u003e pm.expect(body[\"estado\"]).to.eql(\"requiere_aclaracion\"));",
+              "pm.test(\"motivo\", () =\u003e pm.expect(body[\"motivo\"]).to.eql(\"baja_confianza\"));",
+              "pm.test(\"servicio\", () =\u003e pm.expect(body[\"servicio\"]).to.eql(null));",
+              "pm.test(\"solicitud\", () =\u003e pm.expect(body[\"solicitud\"]).to.eql(null));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "sin-evidencia",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Consulta\",\n        \"pais\": \"Chile\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"Necesito ayuda con algo.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(422));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "descripcion-obligatoria",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Crear Cuenta\",\n        \"pais\": \"Chile\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(422));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "pais-obligatorio",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Crear Cuenta\",\n        \"pais\": \"\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(422));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "tipo-usuario-obligatorio",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Crear Cuenta\",\n        \"pais\": \"Chile\",\n        \"tipo_usuario\": \"\",\n        \"descripcion\": \"Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(422));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "titulo-obligatorio",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"   \",\n        \"pais\": \"Chile\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(422));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "contrato-anterior-rechazado",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"ticket_id\": \"POC-1\",\n        \"tipo_ticket\": \"requerimiento\",\n        \"resumen\": \"Crear Cuenta\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    }
+  ]
+}

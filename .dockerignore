@@ -1,0 +1,7 @@
+.git
+.tools
+.runtime
+.env
+data
+postman
+*.xlsx

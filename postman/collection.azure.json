@@ -1,0 +1,257 @@
+{
+  "auth": {
+    "bearer": [
+      {
+        "key": "token",
+        "type": "string",
+        "value": "{{api_token}}"
+      }
+    ],
+    "type": "bearer"
+  },
+  "info": {
+    "description": "Entrada: titulo, pais, tipo_usuario y descripcion. Casos para el simulador; no miden precisión de Decision-1.",
+    "name": "Jira nuam: clasificación de solicitud y servicio",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () =\u003e pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "health",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/health"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () =\u003e pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "ready",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/ready"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () =\u003e pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "catalogo/resumen",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/catalogo/resumen"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP 200\", () =\u003e pm.response.to.have.status(200));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "catalogo/solicitudes?q=Crear%20Cuenta",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/catalogo/solicitudes?q=Crear%20Cuenta"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"estado\", () =\u003e pm.expect(body[\"estado\"]).to.eql(\"clasificado\"));",
+              "pm.test(\"estrategia\", () =\u003e pm.expect(body[\"estrategia\"]).to.eql(\"jerarquica\"));",
+              "pm.test(\"jira_modificado\", () =\u003e pm.expect(body[\"jira_modificado\"]).to.eql(false));",
+              "pm.test(\"modo\", () =\u003e pm.expect(body[\"modo\"]).to.eql(\"real\"));",
+              "pm.test(\"servicio\", () =\u003e pm.expect(body[\"servicio\"]).to.eql({\"codigo\":\"SER_9af8acac33490abe\",\"nombre\":\"Gestion de Usuarios\"}));",
+              "pm.test(\"solicitud\", () =\u003e pm.expect(body[\"solicitud\"]).to.eql({\"codigo\":\"SOL_3ebede04c322c56d\",\"nombre\":\"Crear Cuenta\"}));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "crear-cuenta-real",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Crear Cuenta\",\n        \"pais\": \"Chile\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core para una persona nueva en ambiente productivo.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"estado\", () =\u003e pm.expect(body[\"estado\"]).to.eql(\"clasificado\"));",
+              "pm.test(\"estrategia\", () =\u003e pm.expect(body[\"estrategia\"]).to.eql(\"jerarquica\"));",
+              "pm.test(\"jira_modificado\", () =\u003e pm.expect(body[\"jira_modificado\"]).to.eql(false));",
+              "pm.test(\"modo\", () =\u003e pm.expect(body[\"modo\"]).to.eql(\"real\"));",
+              "pm.test(\"reutilizada\", () =\u003e pm.expect(body[\"reutilizada\"]).to.eql(true));",
+              "pm.test(\"servicio\", () =\u003e pm.expect(body[\"servicio\"]).to.eql({\"codigo\":\"SER_9af8acac33490abe\",\"nombre\":\"Gestion de Usuarios\"}));",
+              "pm.test(\"solicitud\", () =\u003e pm.expect(body[\"solicitud\"]).to.eql({\"codigo\":\"SOL_3ebede04c322c56d\",\"nombre\":\"Crear Cuenta\"}));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "crear-cuenta-repetida",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Crear Cuenta\",\n        \"pais\": \"Chile\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core para una persona nueva en ambiente productivo.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"estado\", () =\u003e pm.expect(body[\"estado\"]).to.eql(\"clasificado\"));",
+              "pm.test(\"jira_modificado\", () =\u003e pm.expect(body[\"jira_modificado\"]).to.eql(false));",
+              "pm.test(\"modo\", () =\u003e pm.expect(body[\"modo\"]).to.eql(\"real\"));",
+              "pm.test(\"servicio\", () =\u003e pm.expect(body[\"servicio\"]).to.eql({\"codigo\":\"SER_462bd64a5665690d\",\"nombre\":\"Backup, Recuperacion y Disponibilidad de Datos\"}));",
+              "pm.test(\"solicitud\", () =\u003e pm.expect(body[\"solicitud\"]).to.eql({\"codigo\":\"SOL_37dd2f97b2be12f5\",\"nombre\":\"Backup Base de Datos\"}));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "backup-real",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Backup Base de Datos\",\n        \"pais\": \"Chile\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"Solicito realizar un backup de una base de datos para un laboratorio.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(200));",
+              "const body = pm.response.json();",
+              "pm.test(\"estado\", () =\u003e pm.expect(body[\"estado\"]).to.eql(\"requiere_aclaracion\"));",
+              "pm.test(\"modo\", () =\u003e pm.expect(body[\"modo\"]).to.eql(\"real\"));",
+              "pm.test(\"servicio\", () =\u003e pm.expect(body[\"servicio\"]).to.eql(null));",
+              "pm.test(\"solicitud\", () =\u003e pm.expect(body[\"solicitud\"]).to.eql(null));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "fuera-catalogo-real",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Reservar restaurante\",\n        \"pais\": \"Chile\",\n        \"tipo_usuario\": \"Colaborador\",\n        \"descripcion\": \"Necesito una mesa para cenar con mi familia el sábado.\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    },
+    {
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"HTTP esperado\", () =\u003e pm.response.to.have.status(422));"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "name": "entrada-incompleta",
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n        \"titulo\": \"Crear cuenta\"\n      }"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "url": "{{base_url}}/clasificaciones"
+      }
+    }
+  ]
+}

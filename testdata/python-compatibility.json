@@ -1,0 +1,87 @@
+[
+  {
+    "input": {
+      "ticket_id": "POC-M01",
+      "tipo_ticket": "requerimiento",
+      "resumen": "Crear Cuenta",
+      "contexto": {
+        "aplicacion": "Polaris",
+        "pais": "Chile"
+      }
+    },
+    "idempotency_key": "f9066ed32de9b916169924fd7b42664bb82c105e6c722a6772a7a765401e6e4d"
+  },
+  {
+    "input": {
+      "ticket_id": "POC-M02",
+      "tipo_ticket": "requerimiento",
+      "resumen": "Crear Cuenta urgente",
+      "contexto": {
+        "aplicacion": "Polaris",
+        "pais": "Chile"
+      }
+    },
+    "idempotency_key": "36258defe44ff7cf75e6b29941409e050b964171fc5298b3fca51a9cd0ee395b"
+  },
+  {
+    "input": {
+      "ticket_id": "POC-M03",
+      "tipo_ticket": "requerimiento",
+      "resumen": "Crear Cuenta"
+    },
+    "idempotency_key": "401f160d2be6bfe83a6704c853b277eaeeae62a0107df4cf7dedd0bc08ee7ce1"
+  },
+  {
+    "input": {
+      "ticket_id": "POC-M04",
+      "tipo_ticket": "requerimiento",
+      "resumen": "La plataforma está caída",
+      "contexto": {
+        "prioridad_existente": "Alta"
+      }
+    },
+    "idempotency_key": "9cec863f29bdc82bf63ad90c65571a4a9d8cd88281d3f62b5cd06b26244daba6"
+  },
+  {
+    "input": {
+      "ticket_id": "POC-M05",
+      "tipo_ticket": "incidente",
+      "resumen": "Gestión de Redes y Telecomunicaciones no funciona",
+      "contexto": {
+        "prioridad_existente": "Baja"
+      }
+    },
+    "idempotency_key": "f7c3f934fd8759c13ecfbfdb14a87d70356876a8a9dfdcfe0b0207ae40e985a7"
+  },
+  {
+    "input": {
+      "ticket_id": "POC-M06",
+      "tipo_ticket": "incidente",
+      "resumen": "Soporte Aplicaciones no funciona"
+    },
+    "idempotency_key": "b68bc84a4f3820238dc37e6f75fc96892d421e5dd31bac535043d5c6d66f51ba"
+  },
+  {
+    "input": {
+      "ticket_id": "POC-M07",
+      "tipo_ticket": "incidente",
+      "resumen": "No funciona la red",
+      "contexto": {
+        "ambito": "CRCC"
+      }
+    },
+    "idempotency_key": "3cd9df7f5f435a3fb0d011a393e5e44e1e1e61e86604cb09d585c006ba33426f"
+  },
+  {
+    "input": {
+      "ticket_id": "POC-M08",
+      "tipo_ticket": "requerimiento",
+      "resumen": "Crear Cuenta",
+      "contexto": {
+        "aplicacion": "Aplicacion desconocida",
+        "pais": "Chile"
+      }
+    },
+    "idempotency_key": "1a62e9fa2575b79b23a978bf95df2d1ec156142d96ed19d05f18395c7da36980"
+  }
+]

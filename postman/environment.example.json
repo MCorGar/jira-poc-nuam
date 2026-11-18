@@ -1,0 +1,8 @@
+{
+  "name": "Jira PoC local ejemplo",
+  "values": [
+    {"key": "base_url", "value": "http://127.0.0.1:8000", "enabled": true},
+    {"key": "api_token", "value": "", "enabled": true, "type": "secret"}
+  ],
+  "_postman_variable_scope": "environment"
+}

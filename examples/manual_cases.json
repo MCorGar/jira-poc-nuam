@@ -1,0 +1,138 @@
+{
+  "provenance": "Casos construidos del nuevo contrato de cuatro campos para mock; no históricos ni evaluación de Decision-1",
+  "human_reviewed": false,
+  "cases": [
+    {
+      "id": "solicitud-sin-aplicacion-ni-variante",
+      "input": {
+        "titulo": "Crear Cuenta",
+        "pais": "Chile",
+        "tipo_usuario": "Colaborador",
+        "descripcion": "Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core."
+      },
+      "expected_status": 200,
+      "expected": {
+        "estado": "clasificado",
+        "solicitud": {
+          "codigo": "SOL_3ebede04c322c56d",
+          "nombre": "Crear Cuenta"
+        },
+        "servicio": {
+          "codigo": "SER_9af8acac33490abe",
+          "nombre": "Gestion de Usuarios"
+        },
+        "modo": "simulado",
+        "jira_modificado": false
+      }
+    },
+    {
+      "id": "solicitud-peru",
+      "input": {
+        "titulo": "Crear Cuenta",
+        "pais": "Perú",
+        "tipo_usuario": "Colaborador",
+        "descripcion": "Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core."
+      },
+      "expected_status": 200,
+      "expected": {
+        "estado": "clasificado"
+      }
+    },
+    {
+      "id": "solicitud-colombia",
+      "input": {
+        "titulo": "Crear Cuenta",
+        "pais": "Colombia",
+        "tipo_usuario": "Colaborador",
+        "descripcion": "Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core."
+      },
+      "expected_status": 200,
+      "expected": {
+        "estado": "clasificado"
+      }
+    },
+    {
+      "id": "tipo-usuario-como-contexto",
+      "input": {
+        "titulo": "Crear Cuenta",
+        "pais": "Chile",
+        "tipo_usuario": "Externo",
+        "descripcion": "Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core."
+      },
+      "expected_status": 200,
+      "expected": {
+        "estado": "clasificado"
+      }
+    },
+    {
+      "id": "sin-evidencia",
+      "input": {
+        "titulo": "Consulta",
+        "pais": "Chile",
+        "tipo_usuario": "Colaborador",
+        "descripcion": "Necesito ayuda con algo."
+      },
+      "expected_status": 200,
+      "expected": {
+        "estado": "requiere_aclaracion",
+        "solicitud": null,
+        "servicio": null,
+        "motivo": "baja_confianza"
+      }
+    },
+    {
+      "id": "descripcion-obligatoria",
+      "input": {
+        "titulo": "Crear Cuenta",
+        "pais": "Chile",
+        "tipo_usuario": "Colaborador",
+        "descripcion": ""
+      },
+      "expected_status": 422,
+      "expected": {}
+    },
+    {
+      "id": "pais-obligatorio",
+      "input": {
+        "titulo": "Crear Cuenta",
+        "pais": "",
+        "tipo_usuario": "Colaborador",
+        "descripcion": "Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core."
+      },
+      "expected_status": 422,
+      "expected": {}
+    },
+    {
+      "id": "tipo-usuario-obligatorio",
+      "input": {
+        "titulo": "Crear Cuenta",
+        "pais": "Chile",
+        "tipo_usuario": "",
+        "descripcion": "Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core."
+      },
+      "expected_status": 422,
+      "expected": {}
+    },
+    {
+      "id": "titulo-obligatorio",
+      "input": {
+        "titulo": "   ",
+        "pais": "Chile",
+        "tipo_usuario": "Colaborador",
+        "descripcion": "Necesito crear usuarios con roles y perfiles de las aplicaciones core y no core."
+      },
+      "expected_status": 422,
+      "expected": {}
+    },
+    {
+      "id": "contrato-anterior-rechazado",
+      "input": {
+        "ticket_id": "POC-1",
+        "tipo_ticket": "requerimiento",
+        "resumen": "Crear Cuenta"
+      },
+      "expected_status": 422,
+      "expected": {}
+    }
+  ]
+}

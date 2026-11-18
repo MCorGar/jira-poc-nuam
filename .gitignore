@@ -1,0 +1,8 @@
+.tools/
+.runtime/
+.env
+data/input/
+data/reports/
+*.xlsx
+*.test
+coverage.out
